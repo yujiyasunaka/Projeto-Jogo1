@@ -1,3 +1,3 @@
-# Projeto-Jogo1
+# Projeto Legendary Bird
 
-# Adicionar alguma coisa nesse README pelo amor de Deus
+Game baseado no Flappy Bird porém com a alma de um ser legendário
