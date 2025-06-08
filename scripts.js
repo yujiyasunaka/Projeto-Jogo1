@@ -7,6 +7,9 @@ const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
 
 
+const somHit = new Audio();
+somHit.src = './efeitos/efeitos_hit.wav'
+
 const chao = {
     spriteX: 0,
     spriteY: 610,
@@ -31,6 +34,16 @@ desenhar(){ // Função para mostrar o chão
     chao.largura, chao.altura,
 );
     }
+}
+
+function colisao(legendaryBird, chao){ // Função para calcular a colisão
+    const birdY = legendaryBird.y + legendaryBird.altura;
+    const chaoY = chao.y;
+
+    if(birdY >= chaoY){
+        return true;
+    }
+    return false;
 }
 
 
@@ -84,19 +97,39 @@ desenhar(){ // Função para mostrar o chão
 }
 
 
-const legendaryBird = {
+function criaBird(){
+    const legendaryBird = {
     spriteX: 0,
     spriteY: 0,
     largura: 33,
     altura: 24,
     x: 10,
     y: 50,
-    gravidade: 0.25,
+    pulo: 5.0,
+    pula(){ // Função pulo do bird
+        console.log("[antes]", legendaryBird.velocidade)
+        legendaryBird.velocidade = - legendaryBird.pulo
+        console.log("[depois]", legendaryBird.velocidade)
+    },
+    gravidade: 0.15,
     velocidade: 0,
 
-    atualizar(){ // Função para controlar a gravidade/velocidade
-        legendaryBird.velocidade = legendaryBird.velocidade + legendaryBird.gravidade
+    atualizar(){ 
+        if(colisao(legendaryBird, chao)){
+            console.log("Fez colisao");
+            somHit.play();
+
+            setTimeout(() => {
+                mudaTela(Telas.INICIO);
+            }, 500);
+            
+            return; 
+        }
+        
+        
+        legendaryBird.velocidade = legendaryBird.velocidade + legendaryBird.gravidade // Calculo para controlar a gravidade/velocidade
         legendaryBird.y = legendaryBird.y + legendaryBird.velocidade
+      
     },
 
 desenhar(){ // Função para mostrar o passarinho na tela
@@ -110,17 +143,27 @@ desenhar(){ // Função para mostrar o passarinho na tela
 
     }
 };
+    return legendaryBird;
+}
 
+const globais = {};
 let telaAtiva = {};
 function mudaTela(novaTela){
     telaAtiva = novaTela;
+
+    if(telaAtiva.inicializar){
+        telaAtiva.inicializar();
+    }
 }
-const Telas = {
+const Telas = {     
     INICIO: {
+        inicializar(){
+        globais.legendaryBird = criaBird();
+    },
         desenhar(){
             planoFundo.desenhar();
             chao.desenhar();
-            legendaryBird.desenhar();
+            globais.legendaryBird.desenhar();
             telaInicio.desenhar(); 
         },
         click(){
@@ -138,10 +181,13 @@ Telas.JOGO = {
     desenhar(){
         planoFundo.desenhar();
         chao.desenhar();
-        legendaryBird.desenhar();
+        globais.legendaryBird.desenhar();
 },
+    click(){
+        globais.legendaryBird.pula();
+    },
     atualizar(){
-        legendaryBird.atualizar();
+        globais.legendaryBird.atualizar();
     }     
 };
 
