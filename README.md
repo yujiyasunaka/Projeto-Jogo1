@@ -1,3 +1,3 @@
 # Projeto Legendary Bird
 
-Game baseado no Flappy Bird porém com a alma de um ser legendário
+O jogo é baseado no flappy bird, porém, com propostas diferentes, apesar da mesma jogabilidade.
