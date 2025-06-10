@@ -111,7 +111,7 @@ function criaBird(){
         legendaryBird.velocidade = - legendaryBird.pulo
         console.log("[depois]", legendaryBird.velocidade)
     },
-    gravidade: 0.15,
+    gravidade: 0.10,
     velocidade: 0,
 
     atualizar(){ 
