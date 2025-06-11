@@ -1,7 +1,8 @@
 console.log("AUUU");
 
 const sprites = new Image();
-sprites.src = './sprites.png'; // Origem das imagens
+sprites.src = './rlksprite.png'; // Origem das imagens
+
 
 const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
@@ -11,12 +12,12 @@ const somHit = new Audio();
 somHit.src = './efeitos/efeitos_hit.wav'
 
 const chao = {
-    spriteX: 0,
-    spriteY: 610,
-    largura: 224,
-    altura: 112,
+    spriteX: 500,
+    spriteY: 270,
+    largura: 450,
+    altura: 222,
     x: 0,
-    y: canvas.height - 112,
+    y: canvas.height - 132,
 
 desenhar(){ // Função para mostrar o chão
     contexto.drawImage(
@@ -48,15 +49,15 @@ function colisao(legendaryBird, chao){ // Função para calcular a colisão
 
 
 const planoFundo = {
-    spriteX: 390,
-    spriteY: 0,
-    largura: 275,
-    altura: 204,
-    x: 0,
-    y: canvas.height - 204,
+    spriteX: -5,
+    spriteY: -240,
+    largura: 450,
+    altura: 1500,
+    x: -10,
+    y: canvas.height - 900,
 
 desenhar(){ // Função para mostrar o plano de fundo
-    contexto.fillStyle = '#70c5ce';
+    contexto.fillStyle = '#B3D8D6';
     contexto.fillRect(0,0, canvas.width, canvas.height)
 
     contexto.drawImage(
@@ -78,12 +79,12 @@ desenhar(){ // Função para mostrar o plano de fundo
 
 
 const telaInicio = {
-    spriteX: 134,
+    spriteX: 178,
     spriteY: 0,
-    largura: 174,
-    altura: 152,
-    x: (canvas.width / 2) - 174 /2,
-    y: 50,
+    largura: 105,
+    altura: 150,
+    x: (canvas.width / 2) - 120 /2,
+    y: 60,
 
 desenhar(){ // Função para mostrar o chão
     contexto.drawImage(
@@ -100,10 +101,10 @@ desenhar(){ // Função para mostrar o chão
 function criaBird(){
     const legendaryBird = {
     spriteX: 0,
-    spriteY: 0,
-    largura: 33,
-    altura: 24,
-    x: 10,
+    spriteY: 9,
+    largura: 95,
+    altura: 35,
+    x: -50,
     y: 50,
     pulo: 5.0,
     pula(){ // Função pulo do bird
@@ -111,7 +112,7 @@ function criaBird(){
         legendaryBird.velocidade = - legendaryBird.pulo
         console.log("[depois]", legendaryBird.velocidade)
     },
-    gravidade: 0.20,
+    gravidade: 0.25,
     velocidade: 0,
 
     atualizar(){ 
@@ -193,7 +194,7 @@ Telas.JOGO = {
 
 function loop(){ // Importante ressaltar que essa parte funciona como camadas // Loop de atualizações que carregam as imagens do jogo
         telaAtiva.desenhar();
-        telaAtiva.atualizar();
+        telaAtiva.atualizar(); 
         requestAnimationFrame(loop); // Carregar as imagens
     }
 
