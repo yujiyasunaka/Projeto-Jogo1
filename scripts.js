@@ -7,7 +7,6 @@ sprites.src = './rlksprite.png'; // Origem das imagens
 const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
 
-
 const somHit = new Audio();
 somHit.src = './efeitos/efeitos_hit.wav'
 
