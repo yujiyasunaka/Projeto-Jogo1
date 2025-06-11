@@ -1,11 +1,10 @@
 console.log("AUUU");
 
 const sprites = new Image();
-sprites.src = './sprites.png'; // Origem das imagens
+sprites.src = './sprite jgo.png'; // Origem das imagens
 
 const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
-
 
 const somHit = new Audio();
 somHit.src = './efeitos/efeitos_hit.wav'
@@ -48,12 +47,12 @@ function colisao(legendaryBird, chao){ // Função para calcular a colisão
 
 
 const planoFundo = {
-    spriteX: 390,
-    spriteY: 0,
-    largura: 275,
-    altura: 204,
+    spriteX: 447,
+    spriteY: 82,
+    largura: 708,
+    altura: 478,
     x: 0,
-    y: canvas.height - 204,
+    y: 0,
 
 desenhar(){ // Função para mostrar o plano de fundo
     contexto.fillStyle = '#70c5ce';
@@ -78,12 +77,12 @@ desenhar(){ // Função para mostrar o plano de fundo
 
 
 const telaInicio = {
-    spriteX: 134,
-    spriteY: 0,
-    largura: 174,
-    altura: 152,
-    x: (canvas.width / 2) - 174 /2,
-    y: 50,
+    spriteX: 1217,
+    spriteY: 400,
+    largura: 204,
+    altura: 215,
+    x: 0,
+    y: 0,
 
 desenhar(){ // Função para mostrar o chão
     contexto.drawImage(
@@ -99,19 +98,19 @@ desenhar(){ // Função para mostrar o chão
 
 function criaBird(){
     const legendaryBird = {
-    spriteX: 0,
-    spriteY: 0,
-    largura: 33,
-    altura: 24,
-    x: 10,
-    y: 50,
+    spriteX: 100,
+    spriteY: 761,
+    largura: 202,
+    altura: 199,
+    x: 0,
+    y: 0,
     pulo: 5.0,
     pula(){ // Função pulo do bird
         console.log("[antes]", legendaryBird.velocidade)
         legendaryBird.velocidade = - legendaryBird.pulo
         console.log("[depois]", legendaryBird.velocidade)
     },
-    gravidade: 0.15,
+    gravidade: 0.10,
     velocidade: 0,
 
     atualizar(){ 
