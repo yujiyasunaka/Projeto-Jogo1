@@ -1,7 +1,7 @@
 console.log("AUUU");
 
 const sprites = new Image();
-sprites.src = './sprites.png'; // Origem das imagens
+sprites.src = './sprite jgo.png'; // Origem das imagens
 
 const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
