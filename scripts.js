@@ -79,7 +79,7 @@ desenhar(){ // Função para mostrar o plano de fundo
 
 
 const telaInicio = {
-    spriteX: 178,
+    spriteX: 177,
     spriteY: 0,
     largura: 105,
     altura: 150,
