@@ -1,22 +1,31 @@
 console.log("AUUU");
 
 const sprites = new Image();
-sprites.src = './rlksprite.png'; // Origem das imagens
-
+sprites.src = './sprites.png'; // Origem das imagens
 
 const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
 
+
 const somHit = new Audio();
 somHit.src = './efeitos/efeitos_hit.wav'
 
+
+
+function criaChao(){
 const chao = {
-    spriteX: 500,
-    spriteY: 270,
-    largura: 450,
-    altura: 222,
+    spriteX: 0,
+    spriteY: 610,
+    largura: 224,
+    altura: 112,
     x: 0,
-    y: canvas.height - 132,
+    y: canvas.height - 112,
+    atualizar(){
+        const movimentoChao = 1;
+        const repeteChao = chao.largura / 2;
+        const movimentacao = chao.x - movimentoChao;
+        chao.x = movimentacao % repeteChao;
+    },
 
 desenhar(){ // Função para mostrar o chão
     contexto.drawImage(
@@ -35,6 +44,8 @@ desenhar(){ // Função para mostrar o chão
 );
     }
 }
+    return chao;
+}
 
 function colisao(legendaryBird, chao){ // Função para calcular a colisão
     const birdY = legendaryBird.y + legendaryBird.altura;
@@ -44,19 +55,19 @@ function colisao(legendaryBird, chao){ // Função para calcular a colisão
         return true;
     }
     return false;
-}
+    }
 
 
 const planoFundo = {
-    spriteX: -5,
-    spriteY: -240,
-    largura: 450,
-    altura: 1500,
-    x: -10,
-    y: canvas.height - 900,
+    spriteX: 390,
+    spriteY: 0,
+    largura: 275,
+    altura: 204,
+    x: 0,
+    y: canvas.height - 204,
 
 desenhar(){ // Função para mostrar o plano de fundo
-    contexto.fillStyle = '#B3D8D6';
+    contexto.fillStyle = '#70c5ce';
     contexto.fillRect(0,0, canvas.width, canvas.height)
 
     contexto.drawImage(
@@ -78,12 +89,12 @@ desenhar(){ // Função para mostrar o plano de fundo
 
 
 const telaInicio = {
-    spriteX: 177,
+    spriteX: 134,
     spriteY: 0,
-    largura: 105,
-    altura: 150,
-    x: (canvas.width / 2) - 120 /2,
-    y: 60,
+    largura: 174,
+    altura: 152,
+    x: (canvas.width / 2) - 174 /2,
+    y: 50,
 
 desenhar(){ // Função para mostrar o chão
     contexto.drawImage(
@@ -100,22 +111,22 @@ desenhar(){ // Função para mostrar o chão
 function criaBird(){
     const legendaryBird = {
     spriteX: 0,
-    spriteY: 9,
-    largura: 95,
-    altura: 35,
-    x: -50,
+    spriteY: 0,
+    largura: 33,
+    altura: 24,
+    x: 10,
     y: 50,
-    pulo: 5.0,
+    pulo: 4.6,
     pula(){ // Função pulo do bird
         console.log("[antes]", legendaryBird.velocidade)
         legendaryBird.velocidade = - legendaryBird.pulo
         console.log("[depois]", legendaryBird.velocidade)
     },
-    gravidade: 0.25,
+    gravidade: 0.10,
     velocidade: 0,
 
     atualizar(){ 
-        if(colisao(legendaryBird, chao)){
+        if(colisao(legendaryBird, globais.chao)){
             console.log("Fez colisao");
             somHit.play();
 
@@ -159,10 +170,11 @@ const Telas = {
     INICIO: {
         inicializar(){
         globais.legendaryBird = criaBird();
+        globais.chao = criaChao();
     },
         desenhar(){
             planoFundo.desenhar();
-            chao.desenhar();
+            globais.chao.desenhar();
             globais.legendaryBird.desenhar();
             telaInicio.desenhar(); 
         },
@@ -171,7 +183,7 @@ const Telas = {
         },
 
         atualizar(){
-
+            globais.chao.atualizar(); 
         }
         
     }
@@ -180,7 +192,7 @@ const Telas = {
 Telas.JOGO = {
     desenhar(){
         planoFundo.desenhar();
-        chao.desenhar();
+        globais.chao.desenhar();
         globais.legendaryBird.desenhar();
 },
     click(){
@@ -188,12 +200,13 @@ Telas.JOGO = {
     },
     atualizar(){
         globais.legendaryBird.atualizar();
+        globais.chao.atualizar();
     }     
 };
 
 function loop(){ // Importante ressaltar que essa parte funciona como camadas // Loop de atualizações que carregam as imagens do jogo
         telaAtiva.desenhar();
-        telaAtiva.atualizar(); 
+        telaAtiva.atualizar();
         requestAnimationFrame(loop); // Carregar as imagens
     }
 
