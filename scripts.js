@@ -1,7 +1,7 @@
 console.log("AUUU");
 
 const sprites = new Image();
-sprites.src = './sprites.png'; // Origem das imagens
+sprites.src = './rlksprites.png'; // Origem das imagens
 
 const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
@@ -9,17 +9,19 @@ const contexto = canvas.getContext('2d');
 
 const somHit = new Audio();
 somHit.src = './efeitos/efeitos_hit.wav'
+const somPulo = new Audio('./efeitos/efeitos_pulo.wav');
+const somPonto = new Audio('./efeitos/efeitos_ponto.wav');
 
 
 
 function criaChao(){
 const chao = {
-    spriteX: 0,
-    spriteY: 610,
-    largura: 224,
-    altura: 112,
+    spriteX: 635,
+    spriteY: 200,
+    largura: 350,
+    altura: 292,
     x: 0,
-    y: canvas.height - 112,
+    y: canvas.height - 132,
     atualizar(){
         const movimentoChao = 1;
         const repeteChao = chao.largura / 2;
@@ -59,15 +61,15 @@ function colisao(legendaryBird, chao){ // Função para calcular a colisão
 
 
 const planoFundo = {
-    spriteX: 390,
-    spriteY: 0,
-    largura: 275,
-    altura: 204,
+    spriteX: 280,
+    spriteY: 275,
+    largura: 277,
+    altura: 104,
     x: 0,
-    y: canvas.height - 204,
+    y: canvas.height - 224,
 
 desenhar(){ // Função para mostrar o plano de fundo
-    contexto.fillStyle = '#70c5ce';
+    contexto.fillStyle = '#665445';
     contexto.fillRect(0,0, canvas.width, canvas.height)
 
     contexto.drawImage(
@@ -89,10 +91,10 @@ desenhar(){ // Função para mostrar o plano de fundo
 
 
 const telaInicio = {
-    spriteX: 134,
-    spriteY: 0,
-    largura: 174,
-    altura: 152,
+    spriteX: 30,
+    spriteY: 250,
+    largura: 190,
+    altura: 232,
     x: (canvas.width / 2) - 174 /2,
     y: 50,
 
@@ -110,16 +112,17 @@ desenhar(){ // Função para mostrar o chão
 
 function criaBird(){
     const legendaryBird = {
-    spriteX: 0,
-    spriteY: 0,
-    largura: 33,
-    altura: 24,
+    spriteX: 90,
+    spriteY: 390,
+    largura: 50,
+    altura: 50,
     x: 10,
     y: 50,
     pulo: 4.6,
     pula(){ // Função pulo do bird
         console.log("[antes]", legendaryBird.velocidade)
         legendaryBird.velocidade = - legendaryBird.pulo
+        somPulo.play(); // Toca o som de pulo
         console.log("[depois]", legendaryBird.velocidade)
     },
     gravidade: 0.10,
