@@ -110,6 +110,102 @@ desenhar(){ // Função para mostrar o chão
 }
 
 
+function criaCanos() {
+    const canos = {
+        largura : 52,
+        altura : 400,
+        chao: {
+            spriteX: 0,
+            spriteY: 169,
+        },
+        ceu: {
+            spriteX: 52,
+            spriteY: 169,
+        },
+        espaco: 80,
+        desenhar(){ 
+            canos.pares.forEach(function(par){
+                const yRandom = par.y;
+                const espacoCanos = 90;
+
+                const canoCeuX = par.x;
+                const canoCeuY = yRandom;
+                   // [Cano do ceu]
+                contexto.drawImage(
+                sprites,
+                canos.ceu.spriteX, canos.ceu.spriteY,
+                canos.largura, canos.altura,
+                canoCeuX, canoCeuY,
+                canos.largura, canos.altura
+            )
+
+            const canoChaoX = par.x;
+            const canoChaoY = canos.altura + espacoCanos + yRandom;
+            // [Cano do chao]
+            contexto.drawImage(
+                sprites,
+                canos.chao.spriteX, canos.chao.spriteY,
+                canos.largura, canos.altura,
+                canoChaoX, canoChaoY,
+                canos.largura, canos.altura,
+            )
+            par.canoCeu = {
+                x: canoCeuX,
+                y: canos.altura + canoCeuY
+            }
+            par.canoChao = {
+                x : canoChaoX,
+                y: canoChaoY
+            }
+
+             })
+      },
+        temColisaoBird(par){
+            const cabecaBird = globais.legendaryBird.y;
+            const peBird = globais.legendaryBird + globais.legendaryBird.altura;
+            if(globais.legendaryBird.x >= par.x){
+                console.log("invadiu");
+
+                if(cabecaBird <= par.canoCeu.y){
+                    return true;
+                }
+
+                if(peBird >= par.canoChao.y){
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        pares : [],
+        atualizar(){
+            const passou100Frames = frames % 100 === 0;
+            if(passou100Frames){
+                console.log("passou 100 frames");
+                canos.pares.push({
+                x: canvas.width,
+                y: -150 * (Math.random() + 1),
+                });
+            }
+
+              canos.pares.forEach(function(par){
+                par.x = par.x - 2;
+
+                if(canos.temColisaoBird(par)){
+                    console.log("perdeu");
+                    mudaTela(Telas.INICIO);
+                }
+
+                if(par.x + canos.largura <= 0){
+                    canos.pares.shift();
+                }
+              })
+        }
+    }
+    return canos;
+}
+
+
 function criaBird(){
     const legendaryBird = {
     spriteX: 90,
@@ -118,14 +214,14 @@ function criaBird(){
     altura: 50,
     x: 10,
     y: 50,
-    pulo: 4.6,
+    pulo: 5.0,
     pula(){ // Função pulo do bird
         console.log("[antes]", legendaryBird.velocidade)
         legendaryBird.velocidade = - legendaryBird.pulo
         somPulo.play(); // Toca o som de pulo
         console.log("[depois]", legendaryBird.velocidade)
     },
-    gravidade: 0.10,
+    gravidade: 0.25,
     velocidade: 0,
 
     atualizar(){ 
@@ -174,11 +270,14 @@ const Telas = {
         inicializar(){
         globais.legendaryBird = criaBird();
         globais.chao = criaChao();
+        globais.canos = criaCanos();
+      
     },
         desenhar(){
             planoFundo.desenhar();
-            globais.chao.desenhar();
             globais.legendaryBird.desenhar();
+            globais.canos.desenhar();
+            globais.chao.desenhar();
             telaInicio.desenhar(); 
         },
         click(){
@@ -187,6 +286,8 @@ const Telas = {
 
         atualizar(){
             globais.chao.atualizar(); 
+   
+          
         }
         
     }
@@ -195,6 +296,7 @@ const Telas = {
 Telas.JOGO = {
     desenhar(){
         planoFundo.desenhar();
+        globais.canos.desenhar();
         globais.chao.desenhar();
         globais.legendaryBird.desenhar();
 },
@@ -202,15 +304,19 @@ Telas.JOGO = {
         globais.legendaryBird.pula();
     },
     atualizar(){
+        globais.canos.atualizar();
+        globais.chao.atualizar(); 
         globais.legendaryBird.atualizar();
-        globais.chao.atualizar();
+        
     }     
 };
 
+let frames = 0;
 function loop(){ // Importante ressaltar que essa parte funciona como camadas // Loop de atualizações que carregam as imagens do jogo
         telaAtiva.desenhar();
         telaAtiva.atualizar();
         requestAnimationFrame(loop); // Carregar as imagens
+        frames++;
     }
 
 window.addEventListener('click', function(){ // Verifica se houve click dentro do navegador
