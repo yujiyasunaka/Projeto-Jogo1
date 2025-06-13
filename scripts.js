@@ -162,7 +162,7 @@ function criaCanos() {
       },
         temColisaoBird(par){
             const cabecaBird = globais.legendaryBird.y;
-            const peBird = globais.legendaryBird + globais.legendaryBird.altura;
+            const peBird = globais.legendaryBird.y + globais.legendaryBird.altura;
             if(globais.legendaryBird.x >= par.x){
                 console.log("invadiu");
 
@@ -206,6 +206,30 @@ function criaCanos() {
 }
 
 
+function criaPlacar(){
+    const placar = {
+         pontos: 0,
+        desenhar(){
+           contexto.font = '35px "VT323"';
+           contexto.textAlign = "right";
+           contexto.fillStyle = "white";
+           contexto.fillText(`${placar.pontos}`, canvas.width - 20 , 35); 
+           placar.pontos 
+        },
+        atualizar(){
+        const intervaloDeFrames = 100;
+        const passouOIntervalo = frames % intervaloDeFrames === 0;
+
+        if(passouOIntervalo){
+            placar.pontos = placar.pontos + 1;
+
+        }
+
+        }
+    }
+    return placar;
+}
+
 function criaBird(){
     const legendaryBird = {
     spriteX: 90,
@@ -238,14 +262,41 @@ function criaBird(){
         
         
         legendaryBird.velocidade = legendaryBird.velocidade + legendaryBird.gravidade // Calculo para controlar a gravidade/velocidade
-        legendaryBird.y = legendaryBird.y + legendaryBird.velocidade
-      
+        legendaryBird.y = legendaryBird.y + legendaryBird.velocidade  
+    },
+
+      movimentos: [
+      { spriteX: 0, spriteY: 0, }, // asa pra cima
+      { spriteX: 0, spriteY: 26, }, // asa no meio 
+      { spriteX: 0, spriteY: 52, }, // asa pra baixo
+      { spriteX: 0, spriteY: 26, }, // asa no meio 
+    ],
+    frameAtual: 0,
+    atualizaOFrameAtual() {     
+      const intervaloDeFrames = 10;
+      const passouOIntervalo = frames % intervaloDeFrames === 0;
+      // console.log('passouOIntervalo', passouOIntervalo)
+
+      if(passouOIntervalo) {
+        const baseDoIncremento = 1;
+        const incremento = baseDoIncremento + legendaryBird.frameAtual;
+        const baseRepeticao = legendaryBird.movimentos.length;
+        legendaryBird.frameAtual = incremento % baseRepeticao
+      }
+        // console.log('[incremento]', incremento);
+        // console.log('[baseRepeticao]',baseRepeticao);
+        // console.log('[frame]', incremento % baseRepeticao);
     },
 
 desenhar(){ // Função para mostrar o passarinho na tela
+
+      legendaryBird.atualizaOFrameAtual();
+      const { spriteX, spriteY } = legendaryBird.movimentos[legendaryBird.frameAtual];
+
+
         contexto.drawImage(
         sprites,
-        legendaryBird.spriteX, legendaryBird.spriteY, // Sprite X, Sprite Y
+        spriteX, spriteY, // Sprite X, Sprite Y
         legendaryBird.largura, legendaryBird.altura, // Tamanho do recorte da Sprite
         legendaryBird.x, legendaryBird.y,
         legendaryBird.largura, legendaryBird.altura,
@@ -293,12 +344,16 @@ const Telas = {
     }
 };
 
-Telas.JOGO = {
+Telas.JOGO = { 
+    inicializar(){
+        globais.placar = criaPlacar();   
+    },
     desenhar(){
         planoFundo.desenhar();
         globais.canos.desenhar();
         globais.chao.desenhar();
         globais.legendaryBird.desenhar();
+        globais.placar.desenhar();
 },
     click(){
         globais.legendaryBird.pula();
@@ -307,6 +362,7 @@ Telas.JOGO = {
         globais.canos.atualizar();
         globais.chao.atualizar(); 
         globais.legendaryBird.atualizar();
+        globais.placar.atualizar();
         
     }     
 };
