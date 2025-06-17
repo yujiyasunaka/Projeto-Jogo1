@@ -32,3 +32,18 @@ let tremorTela = false;
 let intensidadeTremor = 5;
 let tempoTremor = 0;
 let tempoPortal = 0;
+
+// === Definição dos estados possíveis do jogo ===
+const estados = {
+  PRONTO: 0,
+  TUBOS: 1,
+  CHEFAO: 2,
+  DERROTA: 3,
+  VITORIA: 4,
+  CUTSCENE_INICIO: 5,
+  CUTSCENE_BOSS: 6,
+  CUTSCENE_VITORIA: 7,
+  TRANSICAO_PORTAL: 8
+};
+
+let estadoAtual = estados.PRONTO;
