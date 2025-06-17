@@ -45,7 +45,8 @@ const estados = {
   CUTSCENE_INICIO: 5,
   CUTSCENE_BOSS: 6,
   CUTSCENE_VITORIA: 7,
-  TRANSICAO_PORTAL: 8
+  TRANSICAO_PORTAL: 8,
+  PAUSADO: 9
 };
 
 let estadoAtual = estados.PRONTO;
@@ -64,6 +65,10 @@ musicaFundo.volume = 0.5;
 const suspenseFundo = new Audio('./music/suspensefundo.mp3');
 suspenseFundo.loop = true;
 suspenseFundo.volume = 0.8;
+
+const musicaBoss = new Audio("music/bobmarley.mp3");
+musicaBoss.loop = true;
+musicaBoss.volume = 0.5;
 
 
 const imagemCutscene = new Image();
@@ -147,22 +152,32 @@ const jamal = {
 function pararMusicaFundo() {
   musicaFundo.pause();
   musicaFundo.currentTime = 0;
+  musicaBoss.pause();
+  musicaBoss.currentTime = 0;
 }
 
 function gerenciarMusica() {
-  if (
-    estadoAtual === estados.CUTSCENE_INICIO ||
-    estadoAtual === estados.CUTSCENE_BOSS ||
-    estadoAtual === estados.CUTSCENE_VITORIA ||
+  if (estadoAtual === estados.TUBOS) {
+    if (musicaFundo.paused) {
+      musicaFundo.play();
+      musicaBoss.pause();
+      musicaBoss.currentTime = 0;
+    }
+  } else if (
     estadoAtual === estados.CHEFAO ||
-    estadoAtual === estados.DERROTA
+    estadoAtual === estados.CUTSCENE_BOSS ||
+    estadoAtual === estados.CUTSCENE_VITORIA
   ) {
-    if (!musicaFundo.paused) musicaFundo.pause();
-  } else if (musicaFundo.paused && estadoAtual === estados.TUBOS) {
-    musicaFundo.play();
+    if (musicaBoss.paused) {
+      musicaBoss.play();
+      musicaFundo.pause();
+      musicaFundo.currentTime = 0;
+    }
+  } else {
+    musicaFundo.pause();
+    musicaBoss.pause();
   }
 }
-
 
 // === Controle de imagens de cutscene ===
 function carregarImagemCutscene(src) {
@@ -204,8 +219,13 @@ function lidarComPulo() {
     cutsceneIndex++;
     if (cutsceneIndex >= imagensCutsceneBoss.length) {
       estadoAtual = estados.CHEFAO;
+      musicaFundo.pause();
+      musicaFundo.currentTime = 0;
       suspenseFundo.pause();
       suspenseFundo.currentTime = 0;
+
+      musicaBoss.currentTime = 0;
+      musicaBoss.play();
       gravidadeSuspensa = true;
       setTimeout(() => {
         gravidadeSuspensa = false;
@@ -293,6 +313,25 @@ canvas.addEventListener("click", (e) => {
       }
     }
   });
+
+  document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    if (
+      estadoAtual === estados.TUBOS ||
+      estadoAtual === estados.CHEFAO
+    ) {
+      estadoAtual = estados.PAUSADO;
+      musicaFundo.pause();
+      musicaBoss.pause();
+    } else if (estadoAtual === estados.PAUSADO) {
+      // Voltar para o estado anterior
+      // Se estava na fase do boss, volta pra ela; senão, para os tubos
+      estadoAtual = tubosPassados >= TUBOS_ATE_CHEFAO ? estados.CHEFAO : estados.TUBOS;
+
+      gerenciarMusica(); // retoma a música correta
+    }
+  }
+});
 
   lidarComPulo();
 });
@@ -711,6 +750,16 @@ function desenharJogo() {
     botaoReiniciar.style.display = "none";
   }
 
+  if (estadoAtual === estados.PAUSADO) {
+  contexto.fillStyle = "rgba(0, 0, 0, 0.5)";
+  contexto.fillRect(0, 0, canvas.width, canvas.height);
+
+  contexto.fillStyle = "white";
+  contexto.font = "28px 'Press Start 2P'";
+  contexto.textAlign = "center";
+  contexto.fillText("JOGO PAUSADO", canvas.width / 2, canvas.height / 2);
+}
+
   if (tremorTela) {
     contexto.restore();
   }
@@ -728,6 +777,7 @@ function desenharCutscene() {
 
 // === Atualização lógica por frame ===
 function atualizarJogo() {
+  if (estadoAtual === estados.PAUSADO) return;
   if (estadoAtual === estados.TUBOS) tubos.atualizar();
   else if (estadoAtual === estados.CHEFAO) chefao.atualizar();
 
