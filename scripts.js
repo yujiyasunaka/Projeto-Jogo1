@@ -95,3 +95,48 @@ const somCaiu = new Audio("sounds/efeitos_caiu.wav");
 const somHit = new Audio("sounds/efeitos_hit.wav");
 const somPonto = new Audio("sounds/efeitos_ponto.wav");
 const somPulo = new Audio("sounds/efeitos_pulo.wav");
+
+// === Objeto que representa o jogador (Jamal) ===
+const jamal = {
+  x: 80,
+  y: 200,
+  largura: 32,
+  altura: 32,
+  gravidade: 0.35,
+  velocidade: 30,
+  pulo: -6.2,
+
+  pular() {
+    this.velocidade = this.pulo;
+  },
+
+  atualizar() {
+    if (gravidadeSuspensa) return;
+    this.velocidade += this.gravidade;
+    this.y += this.velocidade;
+    // Verifica se caiu no chão (perdeu)
+    if ((estadoAtual === estados.TUBOS || estadoAtual === estados.CHEFAO) && this.y + this.altura >= canvas.height) {
+      if (estadoAtual === estados.CHEFAO) mortePorChefao = true;
+      estadoAtual = estados.DERROTA;
+      pararMusicaFundo();
+    }
+    // Limita Jamal para não ultrapassar o topo da tela
+    if (this.y <= 0) {
+      this.y = 0;
+      this.velocidade = 0;
+    }
+  },
+
+  desenhar() {
+    contexto.drawImage(imagemJamal, this.x, this.y, this.largura, this.altura);
+  },
+
+  reiniciar() {
+    this.y = 200;
+    this.velocidade = 0;
+    pontuacaoTubos = 0;
+    vidaJamal = 4;
+    vidaChefao = 15;
+    this.x = 30;
+  }
+};
