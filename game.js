@@ -10,7 +10,7 @@ const TUBOS_ATE_CHEFAO = 15;
 let cutsceneImagemCarregada = false;
 let mortePorChefao = false;
 let vidaJamal = 12;
-let vidaChefao = 35;
+let vidaChefao = 30;
 let chefaoEscudo = false;
 let escudoAtivo = false;
 let faseBoss = 1;
@@ -32,6 +32,8 @@ let tremorTela = false;
 let intensidadeTremor = 5;
 let tempoTremor = 0;
 let tempoPortal = 0;
+
+
 
 // === Definição dos estados possíveis do jogo ===
 const estados = {
@@ -161,6 +163,7 @@ function gerenciarMusica() {
   }
 }
 
+
 // === Controle de imagens de cutscene ===
 function carregarImagemCutscene(src) {
   cutsceneImagemCarregada = false;
@@ -235,6 +238,7 @@ const botaoStart = {
   altura: 50
 };
 
+
 // === Eventos de clique e teclado ===
 canvas.addEventListener("click", (e) => {
   const rect = canvas.getBoundingClientRect();
@@ -292,6 +296,9 @@ canvas.addEventListener("click", (e) => {
 
   lidarComPulo();
 });
+
+
+
 
 // === Tubos (obstáculos do jogo) ===
 const tubos = {
@@ -665,6 +672,7 @@ function desenharJogo() {
     return;
   }
 
+
   jamal.desenhar();
 
   contexto.fillStyle = "white";
@@ -737,7 +745,8 @@ function atualizarJogo() {
 
     if (Date.now() - tempoPortal > 2000) {
       estadoAtual = estados.CUTSCENE_BOSS;
-    // Inicia a música de suspense
+
+      // Inicia a música de suspense
       suspenseFundo.currentTime = 0;
       suspenseFundo.play();
 
