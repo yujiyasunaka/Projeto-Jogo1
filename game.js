@@ -708,3 +708,12 @@ function desenharJogo() {
   }
 }
 
+// === Exibição das cutscenes ===
+function desenharCutscene() {
+  if (!cutsceneImagemCarregada) {
+    contexto.fillStyle = "black";
+    contexto.fillRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+  contexto.drawImage(imagemCutscene, 0, 0, canvas.width, canvas.height);
+}
