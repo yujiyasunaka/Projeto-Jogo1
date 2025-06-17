@@ -48,9 +48,9 @@ Clone o repositório:
 git clone https://github.com/JoaoPCiriloD/Projeto-Jogo1.git<br>
 
 
-ALUNOS: João Paulo Cirilo Dias      || RA: 24071336-2
-        Vitor Hugo Messias Ferreira || RA: 24023658-2
-        Arthur Prates Torres        || RA: 24008789-2
-        Arthur Andrade              || RA: 24139887-2
-        Yuji Yasunaka Borges        || RA: 24021302-2
-        Murilo Moreschi Lima        || RA: 24252084-2 
+ALUNOS: João Paulo Cirilo Dias      -> RA: 24071336-2 ||
+        Vitor Hugo Messias Ferreira -> RA: 24023658-2 ||
+        Arthur Prates Torres        -> RA: 24008789-2 ||
+        Arthur Andrade              -> RA: 24139887-2 ||
+        Yuji Yasunaka Borges        -> RA: 24021302-2 ||
+        Murilo Moreschi Lima        -> RA: 24252084-2 ||
