@@ -2,7 +2,7 @@
 
 Um jogo em JavaScript estilo Flappy Bird, com um toque especial: Jamal deve atravessar obstáculos, sobreviver aos perigos e enfrentar um boss final lendário.
 
-<div align="center"> <img src="img/jogo-preview.png" alt="Tela inicial do jogo" width="600"/> </div>
+<div align="center"> <img src="img/menu.png" alt="Tela inicial do jogo" width="600"/> </div>
 🎮 Como jogar
 Clique com o mouse ou aperte a barra de espaço para fazer o Jamal voar!
 
