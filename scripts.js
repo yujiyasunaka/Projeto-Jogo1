@@ -140,3 +140,23 @@ const jamal = {
     this.x = 30;
   }
 };
+
+// === Controle de música de fundo ===
+function pararMusicaFundo() {
+  musicaFundo.pause();
+  musicaFundo.currentTime = 0;
+}
+
+function gerenciarMusica() {
+  if (
+    estadoAtual === estados.CUTSCENE_INICIO ||
+    estadoAtual === estados.CUTSCENE_BOSS ||
+    estadoAtual === estados.CUTSCENE_VITORIA ||
+    estadoAtual === estados.CHEFAO ||
+    estadoAtual === estados.DERROTA
+  ) {
+    if (!musicaFundo.paused) musicaFundo.pause();
+  } else if (musicaFundo.paused && estadoAtual === estados.TUBOS) {
+    musicaFundo.play();
+  }
+}
