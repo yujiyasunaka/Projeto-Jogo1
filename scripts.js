@@ -47,3 +47,51 @@ const estados = {
 };
 
 let estadoAtual = estados.PRONTO;
+
+// === Cutscenes (sequências de imagens entre fases) ===
+let cutsceneIndex = 0;
+const imagensCutsceneInicio = ["img/cutscene1.png", "img/cutscene2.png", "img/cutscene3.png"];
+const imagensCutsceneBoss = ["img/cutscene4.png"];
+const imagensCutsceneVictoria = ["img/cutscene5.png"];
+
+// === Recursos de áudio e imagem ===
+const musicaFundo = new Audio("music/musicajogo.mp3");
+musicaFundo.loop = true;
+musicaFundo.volume = 0.5;
+
+const suspenseFundo = new Audio('./music/suspensefundo.mp3');
+suspenseFundo.loop = true;
+suspenseFundo.volume = 0.8;
+
+
+const imagemCutscene = new Image();
+const imagemFundo = new Image();
+imagemFundo.src = "img/bg-battle.png";
+const imagemChefao = new Image();
+imagemChefao.src = "img/boss-open.png";
+const imagemTubo = new Image();
+imagemTubo.src = "img/tubo-cigarro.png";
+const imagemJamal = new Image();
+imagemJamal.src = "img/jamal.png";
+const imagemTelaMorteBoss = new Image();
+imagemTelaMorteBoss.src = "img/telamorteboss.png";
+const imagemMenu = new Image();
+imagemMenu.src = "img/menu.png";
+const ataqueBoss = new Image();
+ataqueBoss.src = "img/bandeira.png"
+const ataqueJamal = new Image();
+ataqueJamal.src = "img/cigarro2.png"
+const imagemPocao = new Image();
+imagemPocao.src = "img/pocao.png";
+const imagemExplosao = new Image();
+imagemExplosao.src = "img/explosao.png";
+let imagemPortal = new Image();
+imagemPortal.src = "img/portal.png";
+const imagemVida = new Image();
+imagemVida.src = "img/vida.png";
+
+
+const somCaiu = new Audio("sounds/efeitos_caiu.wav");
+const somHit = new Audio("sounds/efeitos_hit.wav");
+const somPonto = new Audio("sounds/efeitos_ponto.wav");
+const somPulo = new Audio("sounds/efeitos_pulo.wav");
