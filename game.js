@@ -33,6 +33,8 @@ let intensidadeTremor = 5;
 let tempoTremor = 0;
 let tempoPortal = 0;
 
+
+
 // === Definição dos estados possíveis do jogo ===
 const estados = {
   PRONTO: 0,
@@ -43,7 +45,8 @@ const estados = {
   CUTSCENE_INICIO: 5,
   CUTSCENE_BOSS: 6,
   CUTSCENE_VITORIA: 7,
-  TRANSICAO_PORTAL: 8
+  TRANSICAO_PORTAL: 8,
+  PAUSADO: 9
 };
 
 let estadoAtual = estados.PRONTO;
@@ -62,6 +65,10 @@ musicaFundo.volume = 0.5;
 const suspenseFundo = new Audio('./music/suspensefundo.mp3');
 suspenseFundo.loop = true;
 suspenseFundo.volume = 0.8;
+
+const musicaBoss = new Audio("music/bobmarley.mp3");
+musicaBoss.loop = true;
+musicaBoss.volume = 0.5;
 
 
 const imagemCutscene = new Image();
@@ -145,19 +152,30 @@ const jamal = {
 function pararMusicaFundo() {
   musicaFundo.pause();
   musicaFundo.currentTime = 0;
+  musicaBoss.pause();
+  musicaBoss.currentTime = 0;
 }
 
 function gerenciarMusica() {
-  if (
-    estadoAtual === estados.CUTSCENE_INICIO ||
-    estadoAtual === estados.CUTSCENE_BOSS ||
-    estadoAtual === estados.CUTSCENE_VITORIA ||
+  if (estadoAtual === estados.TUBOS) {
+    if (musicaFundo.paused) {
+      musicaFundo.play();
+      musicaBoss.pause();
+      musicaBoss.currentTime = 0;
+    }
+  } else if (
     estadoAtual === estados.CHEFAO ||
-    estadoAtual === estados.DERROTA
+    estadoAtual === estados.CUTSCENE_BOSS ||
+    estadoAtual === estados.CUTSCENE_VITORIA
   ) {
-    if (!musicaFundo.paused) musicaFundo.pause();
-  } else if (musicaFundo.paused && estadoAtual === estados.TUBOS) {
-    musicaFundo.play();
+    if (musicaBoss.paused) {
+      musicaBoss.play();
+      musicaFundo.pause();
+      musicaFundo.currentTime = 0;
+    }
+  } else {
+    musicaFundo.pause();
+    musicaBoss.pause();
   }
 }
 
@@ -201,8 +219,13 @@ function lidarComPulo() {
     cutsceneIndex++;
     if (cutsceneIndex >= imagensCutsceneBoss.length) {
       estadoAtual = estados.CHEFAO;
+      musicaFundo.pause();
+      musicaFundo.currentTime = 0;
       suspenseFundo.pause();
       suspenseFundo.currentTime = 0;
+
+      musicaBoss.currentTime = 0;
+      musicaBoss.play();
       gravidadeSuspensa = true;
       setTimeout(() => {
         gravidadeSuspensa = false;
@@ -234,6 +257,7 @@ const botaoStart = {
   largura: 170,
   altura: 50
 };
+
 
 // === Eventos de clique e teclado ===
 canvas.addEventListener("click", (e) => {
@@ -290,8 +314,30 @@ canvas.addEventListener("click", (e) => {
     }
   });
 
+  document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    if (
+      estadoAtual === estados.TUBOS ||
+      estadoAtual === estados.CHEFAO
+    ) {
+      estadoAtual = estados.PAUSADO;
+      musicaFundo.pause();
+      musicaBoss.pause();
+    } else if (estadoAtual === estados.PAUSADO) {
+      // Voltar para o estado anterior
+      // Se estava na fase do boss, volta pra ela; senão, para os tubos
+      estadoAtual = tubosPassados >= TUBOS_ATE_CHEFAO ? estados.CHEFAO : estados.TUBOS;
+
+      gerenciarMusica(); // retoma a música correta
+    }
+  }
+});
+
   lidarComPulo();
 });
+
+
+
 
 // === Tubos (obstáculos do jogo) ===
 const tubos = {
@@ -665,6 +711,7 @@ function desenharJogo() {
     return;
   }
 
+
   jamal.desenhar();
 
   contexto.fillStyle = "white";
@@ -703,6 +750,16 @@ function desenharJogo() {
     botaoReiniciar.style.display = "none";
   }
 
+  if (estadoAtual === estados.PAUSADO) {
+  contexto.fillStyle = "rgba(0, 0, 0, 0.5)";
+  contexto.fillRect(0, 0, canvas.width, canvas.height);
+
+  contexto.fillStyle = "white";
+  contexto.font = "28px 'Press Start 2P'";
+  contexto.textAlign = "center";
+  contexto.fillText("JOGO PAUSADO", canvas.width / 2, canvas.height / 2);
+}
+
   if (tremorTela) {
     contexto.restore();
   }
@@ -717,3 +774,86 @@ function desenharCutscene() {
   }
   contexto.drawImage(imagemCutscene, 0, 0, canvas.width, canvas.height);
 }
+
+// === Atualização lógica por frame ===
+function atualizarJogo() {
+  if (estadoAtual === estados.PAUSADO) return;
+  if (estadoAtual === estados.TUBOS) tubos.atualizar();
+  else if (estadoAtual === estados.CHEFAO) chefao.atualizar();
+
+  if ([estados.TUBOS, estados.CHEFAO].includes(estadoAtual)) {
+    jamal.atualizar();
+  }
+
+  if (estadoAtual === estados.TRANSICAO_PORTAL) {
+    // Jamal é puxado para o centro da tela lentamente
+    const destinoX = canvas.width / 2 - jamal.largura / 2;
+    const destinoY = canvas.height / 2 - jamal.altura / 2;
+
+    jamal.x += (destinoX - jamal.x) * 0.05;
+    jamal.y += (destinoY - jamal.y) * 0.05;
+
+    if (Date.now() - tempoPortal > 2000) {
+      estadoAtual = estados.CUTSCENE_BOSS;
+
+      // Inicia a música de suspense
+      suspenseFundo.currentTime = 0;
+      suspenseFundo.play();
+
+      cutsceneIndex = 0;
+      cutscenePodeAvancar = false;
+      carregarImagemCutscene(imagensCutsceneBoss[cutsceneIndex]);
+
+      // Ajusta a posição do Jamal após entrar no portal
+      jamal.x = 80;
+      jamal.y = canvas.height / 2 - jamal.altura / 2;
+
+      setTimeout(() => {
+        cutscenePodeAvancar = true;
+      }, 500);
+    }
+
+  }
+}
+
+// === Início de uma nova partida ===
+function iniciarJogo() {
+  jamal.reiniciar();
+  tubos.reiniciar();
+  chefao.reiniciar();
+  quadros = 0;
+}
+
+// === Loop principal ===
+function loopDoJogo() {
+  if (!jogoRodando) return;
+  gerenciarMusica();
+  atualizarJogo();
+  desenharJogo();
+  quadros++;
+  requestAnimationFrame(loopDoJogo);
+}
+
+// === Inicialização após carregamento de fundo ===
+imagemFundo.onload = () => {
+  jogoRodando = true;
+  desenharJogo();
+  loopDoJogo();
+};
+
+// === Botão de reinício ===
+const botaoReiniciar = document.getElementById("retryButton");
+botaoReiniciar.addEventListener("click", () => {
+  mortePorChefao = false;
+  jamal.reiniciar();
+  tubos.reiniciar();
+  chefao.reiniciar();
+  estadoAtual = estados.PRONTO;
+  quadros = 0;
+  pararMusicaFundo();
+
+  if (!jogoRodando) {
+    jogoRodando = true;
+    loopDoJogo();
+  }
+});
