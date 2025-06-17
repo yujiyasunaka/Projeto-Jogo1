@@ -169,3 +169,68 @@ function carregarImagemCutscene(src) {
   };
   imagemCutscene.src = src;
 }
+
+// === Lógica ao clicar ou apertar espaço ===
+function lidarComPulo() {
+  if (estadoAtual === estados.CUTSCENE_INICIO) {
+    if (!cutscenePodeAvancar) return;
+
+    if (cutsceneIndex === 0) {
+      suspenseFundo.play();
+    }
+
+    cutsceneIndex++;
+    if (cutsceneIndex >= imagensCutsceneInicio.length) {
+      suspenseFundo.pause();
+      suspenseFundo.currentTime = 0;
+
+      estadoAtual = estados.TUBOS;
+      iniciarJogo();
+      musicaFundo.play();
+    }
+    else {
+      carregarImagemCutscene(imagensCutsceneInicio[cutsceneIndex]);
+      cutscenePodeAvancar = false;
+      setTimeout(() => {
+        cutscenePodeAvancar = true;
+      }, 3000);
+    }
+  } else if (estadoAtual === estados.CUTSCENE_BOSS) {
+    if (!cutscenePodeAvancar) return;
+
+    cutsceneIndex++;
+    if (cutsceneIndex >= imagensCutsceneBoss.length) {
+      estadoAtual = estados.CHEFAO;
+      suspenseFundo.pause();
+      suspenseFundo.currentTime = 0;
+      gravidadeSuspensa = true;
+      setTimeout(() => {
+        gravidadeSuspensa = false;
+      }, 500);
+    } else {
+      carregarImagemCutscene(imagensCutsceneBoss[cutsceneIndex]);
+    }
+  } else if (estadoAtual === estados.TUBOS || estadoAtual === estados.CHEFAO) {
+    somPulo.play();
+    jamal.pular();
+  } else if (estadoAtual === estados.PRONTO) {
+    estadoAtual = estados.CUTSCENE_INICIO;
+    cutsceneIndex = 0;
+    carregarImagemCutscene(imagensCutsceneInicio[cutsceneIndex]);
+    musicaFundo.pause();
+    musicaFundo.currentTime = 0;
+    suspenseFundo.currentTime = 0;
+    suspenseFundo.play();
+    cutscenePodeAvancar = false;
+    setTimeout(() => {
+      cutscenePodeAvancar = true;
+    }, 3000);
+  }
+}
+
+const botaoStart = {
+  x: canvas.width / 2 - 85, // centralizado
+  y: canvas.height - 100,   // perto da parte inferior
+  largura: 170,
+  altura: 50
+};
