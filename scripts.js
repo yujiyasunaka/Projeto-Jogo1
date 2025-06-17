@@ -160,3 +160,12 @@ function gerenciarMusica() {
     musicaFundo.play();
   }
 }
+
+// === Controle de imagens de cutscene ===
+function carregarImagemCutscene(src) {
+  cutsceneImagemCarregada = false;
+  imagemCutscene.onload = () => {
+    cutsceneImagemCarregada = true;
+  };
+  imagemCutscene.src = src;
+}
