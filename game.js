@@ -55,7 +55,7 @@ let estadoAtual = estados.PRONTO;
 let cutsceneIndex = 0;
 const imagensCutsceneInicio = ["img/cutscene1.png", "img/cutscene2.png", "img/cutscene3.png", "img/cutscene6.png"];
 const imagensCutsceneBoss = ["img/cutscene4.png"];
-const imagensCutsceneVictoria = ["img/cutscene5.png", "img/cutscene7.png" ];
+const imagensCutsceneVictoria = ["img/cutscene5.png"];
 
 // === Recursos de áudio e imagem ===
 const musicaFundo = new Audio("music/musicajogo.mp3");
