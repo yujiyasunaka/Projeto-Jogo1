@@ -28,6 +28,8 @@ O boss se move verticalmente e lança bandeiras contra você.
 Se você for atingido, perde vida.
 
 Jamal pode disparar cigarros clicando para acertar o boss.
+Poções de cura são dropadas durante a batalha contra o boss.
+Barra de ataque especial carregada conforme acertos no boss. 
 
 🏁 Vitória
 <div align="center"> <img src="img/cutscene5.png" alt="Tela de vitória" width="500"/> </div>
