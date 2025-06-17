@@ -234,3 +234,61 @@ const botaoStart = {
   largura: 170,
   altura: 50
 };
+
+// === Eventos de clique e teclado ===
+canvas.addEventListener("click", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  const clickY = e.clientY - rect.top;
+  if (estadoAtual === estados.PRONTO) {
+    if (
+      clickX >= botaoStart.x &&
+      clickX <= botaoStart.x + botaoStart.largura &&
+      clickY >= botaoStart.y &&
+      clickY <= botaoStart.y + botaoStart.altura
+    ) {
+      estadoAtual = estados.CUTSCENE_INICIO;
+      cutsceneIndex = 0;
+      carregarImagemCutscene(imagensCutsceneInicio[cutsceneIndex]);
+      musicaFundo.pause();
+      musicaFundo.currentTime = 0;
+      return;
+    }
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "F9") { // Verifica se a tecla pressionada é F9
+      // Força o jogo a ir direto para a cutscene da boss fight
+      estadoAtual = estados.CUTSCENE_BOSS;
+      cutsceneIndex = 0; // Reinicia o índice da cutscene para a do boss
+      cutscenePodeAvancar = false; // Garante que não avança imediatamente se a cutscene do boss tiver um delay
+
+      // Carrega a primeira imagem da cutscene do boss
+      // Assumindo que imagensCutsceneBoss tem pelo menos uma imagem
+      carregarImagemCutscene(imagensCutsceneBoss[cutsceneIndex]);
+
+      // Suspende temporariamente a gravidade como na transição normal
+      // Isso é importante para Jamal não cair durante a transição
+      gravidadeSuspensa = true;
+      setTimeout(() => {
+        gravidadeSuspensa = false;
+        cutscenePodeAvancar = true; // Permite avançar a cutscene após o delay
+      }, 500); // Meio segundo de gravidade suspensa, ajuste se necessário
+
+      // Reinicia elementos do jogo para evitar bugs na transição
+      jamal.reiniciar();
+      tubos.reiniciar(); // Limpa os tubos existentes
+      chefao.reiniciar(); // Garante que o chefe comece do zero
+      pararMusicaFundo(); // Para a música dos tubos se estiver tocando
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "e" || e.key === "E") {
+      if (especialDisponivel && estadoAtual === estados.CHEFAO) {
+        ativarAtaqueEspecial();
+      }
+    }
+  });
+
+  lidarComPulo();
+});
