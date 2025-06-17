@@ -292,3 +292,89 @@ canvas.addEventListener("click", (e) => {
 
   lidarComPulo();
 });
+
+// === Tubos (obstáculos do jogo) ===
+const tubos = {
+  posicoes: [],
+  largura: 124,
+  altura: 400,
+  espaco: 100,
+
+  desenhar() {
+    this.posicoes.forEach(tubo => {
+      // Tubo superior (invertido)
+      contexto.save();
+      contexto.translate(tubo.x + this.largura / 2, tubo.y + this.altura / 2);
+      contexto.rotate(Math.PI);
+      contexto.drawImage(imagemTubo, -this.largura / 2, -this.altura / 2, this.largura, this.altura);
+      contexto.restore();
+
+      // Tubo inferior
+      const yInferior = tubo.y + this.altura + this.espaco;
+      contexto.drawImage(imagemTubo, tubo.x, yInferior, this.largura, this.altura);
+    });
+  },
+
+  atualizar() {
+    if (tubosPassados < TUBOS_ATE_CHEFAO && quadros % 150 === 0) {
+      let y = -Math.floor(Math.random() * 150);
+      this.posicoes.push({ x: canvas.width, y, jaPontuado: false });
+    }
+
+    this.posicoes.forEach((tubo, i) => {
+      tubo.x -= 3;
+
+      // Detecção de colisão com Jamal
+      const margemXJamal = 6;
+      const margemYJamal = 6;
+      const px = jamal.x + margemXJamal;
+      const py = jamal.y + margemYJamal;
+      const pw = jamal.largura - 2 * margemXJamal;
+      const ph = jamal.altura - 2 * margemYJamal;
+
+      const tuboEsquerda = tubo.x + 30;
+      const tuboDireita = tubo.x + this.largura - 30;
+      const tuboTopo = tubo.y + 36;
+      const tuboBase = tubo.y + this.altura + this.espaco + 36;
+
+      const colisaoTopo = px + pw > tuboEsquerda && px < tuboDireita && py < tuboTopo + this.altura - 72;
+      const colisaoBase = px + pw > tuboEsquerda && px < tuboDireita && py + ph > tuboBase;
+
+      if (colisaoTopo || colisaoBase) {
+        somCaiu.currentTime = 0;
+        somCaiu.play();
+        this.reiniciar();
+        jamal.reiniciar();
+        chefao.reiniciar();
+        estadoAtual = estados.PRONTO;
+        pararMusicaFundo();
+      }
+
+      // Contagem de pontos
+      if (!tubo.jaPontuado && tubo.x + this.largura < jamal.x) {
+        tubo.jaPontuado = true;
+        pontuacaoTubos++;
+        tubosPassados++;
+        somPonto.currentTime = 0;
+        somPonto.play();
+
+        // Início da cutscene do chefe
+        if (tubosPassados >= TUBOS_ATE_CHEFAO) {
+          estadoAtual = estados.TRANSICAO_PORTAL;
+          tempoPortal = Date.now();
+        }
+      }
+
+      // Remove tubos fora da tela
+      if (tubo.x + this.largura < 0) {
+        this.posicoes.shift();
+      }
+    });
+  },
+
+  reiniciar() {
+    this.posicoes = [];
+    tubosPassados = 0;
+    pontuacaoTubos = 0;
+  }
+};
