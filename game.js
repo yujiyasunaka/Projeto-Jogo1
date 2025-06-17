@@ -737,3 +737,64 @@ function atualizarJogo() {
 
     if (Date.now() - tempoPortal > 2000) {
       estadoAtual = estados.CUTSCENE_BOSS;
+    // Inicia a música de suspense
+      suspenseFundo.currentTime = 0;
+      suspenseFundo.play();
+
+      cutsceneIndex = 0;
+      cutscenePodeAvancar = false;
+      carregarImagemCutscene(imagensCutsceneBoss[cutsceneIndex]);
+
+      // Ajusta a posição do Jamal após entrar no portal
+      jamal.x = 80;
+      jamal.y = canvas.height / 2 - jamal.altura / 2;
+
+      setTimeout(() => {
+        cutscenePodeAvancar = true;
+      }, 500);
+    }
+
+  }
+}
+
+// === Início de uma nova partida ===
+function iniciarJogo() {
+  jamal.reiniciar();
+  tubos.reiniciar();
+  chefao.reiniciar();
+  quadros = 0;
+}
+
+// === Loop principal ===
+function loopDoJogo() {
+  if (!jogoRodando) return;
+  gerenciarMusica();
+  atualizarJogo();
+  desenharJogo();
+  quadros++;
+  requestAnimationFrame(loopDoJogo);
+}
+
+// === Inicialização após carregamento de fundo ===
+imagemFundo.onload = () => {
+  jogoRodando = true;
+  desenharJogo();
+  loopDoJogo();
+};
+
+// === Botão de reinício ===
+const botaoReiniciar = document.getElementById("retryButton");
+botaoReiniciar.addEventListener("click", () => {
+  mortePorChefao = false;
+  jamal.reiniciar();
+  tubos.reiniciar();
+  chefao.reiniciar();
+  estadoAtual = estados.PRONTO;
+  quadros = 0;
+  pararMusicaFundo();
+
+  if (!jogoRodando) {
+    jogoRodando = true;
+    loopDoJogo();
+  }
+});
