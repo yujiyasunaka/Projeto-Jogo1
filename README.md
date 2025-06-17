@@ -28,6 +28,8 @@ O boss se move verticalmente e lança bandeiras contra você.
 Se você for atingido, perde vida.
 
 Jamal pode disparar cigarros clicando para acertar o boss.
+Poções de cura são dropadas durante a batalha contra o boss.
+Barra de ataque especial carregada conforme acertos no boss. 
 
 🏁 Vitória
 <div align="center"> <img src="img/cutscene5.png" alt="Tela de vitória" width="500"/> </div>
@@ -43,14 +45,4 @@ Imagens e sprites customizados
 
 🚀 Rodando localmente
 Clone o repositório:
-
-git clone https://github.com/thrlk00/-noisgenofre.git<br>
-cd jogo-jamal<br>
-Abra o arquivo index.html em seu navegador.
-
-✨ Créditos
-Jogo desenvolvido pela turma de Engenharia de Software Unicesumar: Arthur Andrade, Arthur Prates, Vitor Hugo Messias, Yuji Yasunaka, Murilo Lima e João Paulo Cirilo.
-
-Arte original de Jamal e Boss
-
-Inspirado por Flappy Bird, com uma pitada de crítica aos "legendários" 😎
+git clone https://github.com/JoaoPCiriloD/Projeto-Jogo1.git<br>
