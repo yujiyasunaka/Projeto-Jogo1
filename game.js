@@ -717,3 +717,23 @@ function desenharCutscene() {
   }
   contexto.drawImage(imagemCutscene, 0, 0, canvas.width, canvas.height);
 }
+
+// === Atualização lógica por frame ===
+function atualizarJogo() {
+  if (estadoAtual === estados.TUBOS) tubos.atualizar();
+  else if (estadoAtual === estados.CHEFAO) chefao.atualizar();
+
+  if ([estados.TUBOS, estados.CHEFAO].includes(estadoAtual)) {
+    jamal.atualizar();
+  }
+
+  if (estadoAtual === estados.TRANSICAO_PORTAL) {
+    // Jamal é puxado para o centro da tela lentamente
+    const destinoX = canvas.width / 2 - jamal.largura / 2;
+    const destinoY = canvas.height / 2 - jamal.altura / 2;
+
+    jamal.x += (destinoX - jamal.x) * 0.05;
+    jamal.y += (destinoY - jamal.y) * 0.05;
+
+    if (Date.now() - tempoPortal > 2000) {
+      estadoAtual = estados.CUTSCENE_BOSS;
